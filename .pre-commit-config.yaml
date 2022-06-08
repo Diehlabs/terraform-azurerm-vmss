@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.0.1  # Use the ref you want to point at
+  rev: v4.1.0
   hooks:
     - id: trailing-whitespace
       args: [--markdown-linebreak-ext=md]
@@ -12,17 +12,26 @@ repos:
     - id: end-of-file-fixer
 
 - repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.16 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
+  rev: v0.1.17
   hooks:
     - id: tflint
       args:
-        - "--module"
         - "--config=.tflint.hcl"
     - id: terraform-validate
     - id: terraform-fmt
+    - id: gofmt
+    - id: golint
 
 - repo: https://github.com/terraform-docs/terraform-docs
   rev: "v0.16.0"
   hooks:
     - id: terraform-docs-system
       args: ["markdown", "--output-file", "README.md", "./"]
+
+- repo: https://github.com/bridgecrewio/checkov.git
+  rev: 2.0.791
+  hooks:
+    - id: checkov
+      args: [--external-checks-dir, 'policies', --framework, 'terraform']
+  # to run this manually:
+  # checkov -d ./ --framework terraform --external-checks-dir policies

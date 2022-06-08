@@ -1,0 +1,37 @@
+---
+# more information here https://www.checkov.io/3.Custom%20Policies/YAML%20Custom%20Policies.html
+metadata:
+  name: "Ensure VMSS uses Log Analytics Extension"
+  id: "LOG_0000001"
+  category: "LOGGING"
+
+# Need to update the metadata.id
+# This will pass if the only extenion installed is the one we want -
+# need to ensure this doesn't mark failed when others are also installed
+
+scope:
+  provider: azurerm
+
+definition:
+  and:
+    - cond_type: "connection"
+      resource_types:
+        - "azurerm_linux_virtual_machine_scale_set"
+      connected_resource_types:
+        - "azurerm_virtual_machine_scale_set_extension"
+      operator: "exists"
+    - or:
+      - cond_type: "attribute"
+        resource_types:
+          - "azurerm_virtual_machine_scale_set_extension"
+        attribute: "type"
+        operator: "equals"
+        value: "MicrosoftMonitoringAgent"
+
+      - cond_type: "attribute"
+        resource_types:
+          - "azurerm_virtual_machine_scale_set_extension"
+        attribute: "type"
+        operator: "equals"
+        value: "OmsAgentForLinux"
+        
